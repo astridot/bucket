@@ -6,7 +6,7 @@ def read_long_description():
     with open('info.html', encoding='utf-8') as f:
         return f.read()
 
-VERSION: str = "v1"
+VERSION: str = "v2"
 
 setup(
     name='bkt',
@@ -15,7 +15,7 @@ setup(
     author_email='pixilreal@gmail.com',
     description='Dependency manager for any language, for free, no subscriptions.',
     long_description=read_long_description(),
-    long_description_content_type='text/html',
+    long_description_content_type='text/plain',
     packages=find_packages(),
     classifiers=[
         'Programming Language :: Python :: 3',
