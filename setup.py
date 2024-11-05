@@ -1,6 +1,9 @@
+import os
+
 from setuptools import setup, find_packages
 
 def read_long_description():
+    print(os.listdir())
     with open('info.html', encoding='utf-8') as f:
         return f.read()
 
@@ -11,7 +14,7 @@ setup(
     version=VERSION,
     author='astridot',
     author_email='pixilreal@gmail.com',
-    description='An easy to understand language built from Python.',
+    description='Dependency manager for any language, for free, no subscriptions.',
     long_description=read_long_description(),
     long_description_content_type='text/html',
     packages=find_packages(),
