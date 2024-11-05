@@ -6,7 +6,7 @@ def read_long_description():
     with open('info.html', encoding='utf-8') as f:
         return f.read()
 
-VERSION: str = "v2"
+VERSION: str = "v1.04"
 
 setup(
     name='bkt',
@@ -26,7 +26,7 @@ setup(
     install_requires=[],
     entry_points={
         'console_scripts': [
-            'bucket=bucket.core:main'
+            'bucket=bucket.cli:main'
         ]
     },
 )
