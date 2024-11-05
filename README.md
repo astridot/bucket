@@ -1,0 +1,1 @@
+# Check the `info.html` file for information
