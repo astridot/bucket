@@ -3,7 +3,6 @@ import os
 from setuptools import setup, find_packages
 
 def read_long_description():
-    print(os.listdir())
     with open('info.html', encoding='utf-8') as f:
         return f.read()
 
