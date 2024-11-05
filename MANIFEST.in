@@ -1,0 +1,4 @@
+include info.html
+include README.md
+include .bucket
+include LICENSE
