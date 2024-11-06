@@ -1,12 +1,10 @@
-import os
-
 from setuptools import setup, find_packages
 
 def read_long_description():
     with open('info.html', encoding='utf-8') as f:
         return f.read()
 
-VERSION: str = "v1.06"
+VERSION: str = "v1.0.0"
 
 setup(
     name='bkt',
