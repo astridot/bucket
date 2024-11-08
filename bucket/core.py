@@ -35,7 +35,7 @@ class Bucket:
         meta_data = {"name": self.name, "entrypoint": "", "author": self.author}
         self._save_json(self.meta_file, meta_data)
         self._save_json(self.dep_file, {})
-        self.update_info(self.description)
+        self.update_info(se)
         print(f"Bucket '{self.name}' initialized.")
 
     def destroy(self):
@@ -101,8 +101,10 @@ class Bucket:
             else:
                 print(f"No install command for {dep_name}, visit {details['source']} to install manually.")
 
-    def update_info(self, content):
-        self.description = content
+    def update_info(self):
+        with open("info.html") as f:
+            self.description = f.read()
+        self.author = self._load_json(self.meta_file, {})["author"]
         html_content = f"""<!doctype html>
 <html lang="en">
 <head>
@@ -167,8 +169,8 @@ class Bucket:
             f.write(html_content)
         print("Updated info.")
 
-    def manage_web(self, subcommand, arg):
+    def manage_web(self, subcommand):
         if subcommand == "update":
-            self.update_info(arg)
+            self.update_info()
         elif subcommand == "open":
             webbrowser.open(f"file://{os.path.abspath(self.html_file)}")

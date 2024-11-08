@@ -46,15 +46,56 @@
     <br>
     <div class="title-container">
         <h1 class="__title">Bucket</h1>
-        <h2 class="__subtitle">by pixil</h2>
+        <h2 class="__subtitle">by Astridot</h2>
     </div>
     <h3 class="__hint"><i>Scroll down to learn more about Bucket</i></h3>
     <br>
 </div>
 <div class="body">
     <h2 class="__info_title"><u>Info</u></h2>
-    <p class="__rights"><b>All rights over Bucket belong to pixil.</b></p>
+    <p class="__rights"><b>All rights over Bucket belong to Astridot.</b></p>
 </div>
-<p>No information available.</p>
+<p><h1>Bucket</h1>
+
+<h2>Installation</h2>
+<p>Execute this command in any terminal with Python &gt;=3.12 installed: `pip install bkt`</p>
+<h2>Getting started</h2>
+<p>
+Run `bucket init` to initialize a bucket in .
+<br>Run `bucket -d path/to/my/directory init` to initialize a bucket in ./path/to/my/directory
+<br>Average size of a bucket is 1.44KB
+</p>
+<h2>Entrypoint and Run</h2>
+<p>
+Buckets can be ran using `bucket run`, which will execute the entrypoint.
+<br>To set an entrypoint, run `bucket set entrypoint [command]` (e.g. `bucket set entrypoint python main.py`)
+<br>In the examplea above, when you execute `bucket run`, `python main.py` would be executed.
+</p>
+<h2>Dependencies (dep)</h2>
+<p>
+Add a dependency with `bucket dep add [name] [source] [version] [download-command]`
+<br>Edit a dependency with `bucket dep edit [name] [source] [version] [download-command]`
+<br>Remove a dependency with `bucket dep rm [name]`
+<br>Remove all dependencies with `bucket dep rm *`
+<br>List all dependencies with `bucket dep list`
+<br>Install a dependency with `bucket dep install [name]`
+<br>Install all dependencies with `bucket dep install *`
+</p>
+<h2>Workspace (ws)</h2>
+<p>
+Add a file with `bucket ws add file [name]`
+<br>Add a directory with `bucket ws add dir [name]`
+<br>(i) Files and directories created with bucket ws are automatically added to git by Bucket
+<br>Remove a file with `bucket ws rm file [name]`
+<br>Remove a directory with `bucket ws rm dir [name]`
+<br>List all files and directories at . with `bucket ws list` or `bucket ws info`
+</p>
+
+<h2>Web</h2>
+<p>
+To add content to your bucket's local web server, start with creating a `info.html` file with `bucket ws add file info.html`.
+<br>Once you're done writing it, run `bucket web update` to save your changes, and `bucket web open` to open your web server.
+</p>
+</p>
 </body>
 </html>

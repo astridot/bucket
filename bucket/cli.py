@@ -46,7 +46,7 @@ def main():
         case "destroy": bucket.destroy()
         case "run": bucket.run(args.args)
         case "set": bucket.set_property(args.property, " ".join(args.value))
-        case "web": bucket.manage_web(args.subcommand, args.args[1])
+        case "web": bucket.manage_web(args.subcommand)
         case "dep":
             match args.subcommand:
                 case "add": bucket.add_or_edit_dependency(args.name, args.source, args.version, args.install_command)
