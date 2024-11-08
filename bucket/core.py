@@ -103,7 +103,66 @@ class Bucket:
 
     def update_info(self, content):
         self.description = content
-        html_content = f"""<!doctype html><html lang="en"><head><title>{self.name}</title></head><body><h1>{self.name}</h1><p>{self.description}</p></body></html>"""
+        html_content = f"""<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>{self.name}</title>
+<style>
+    body {{
+        font-family: Arial, sans-serif;
+    }}
+    .header {{
+        background-image: linear-gradient(to bottom right, #00a6ff, #0055ff);
+        color: white;
+        padding: 20px;
+        text-align: center;
+    }}
+    .title-container {{
+        display: flex;
+        align-items: baseline;
+        justify-content: center;
+        gap: 20px;
+    }}
+    .__title {{
+        font-size: 10em;
+        margin: 0;
+    }}
+    .__subtitle {{
+        font-size: 3em;
+        margin: 0;
+    }}
+    .__info_title {{
+        font-size: 4.5em;
+    }}
+    .__rights {{
+        font-size: 2em;
+    }}
+    .body {{
+        color: black;
+        padding: 20px;
+    }}
+</style>
+</head>
+<body>
+<div class="header">
+    <br>
+    <div class="title-container">
+        <h1 class="__title">{self.name}</h1>
+        <h2 class="__subtitle">by {self.author}</h2>
+    </div>
+    <h3 class="__hint"><i>Scroll down to learn more about {self.name}</i></h3>
+    <br>
+</div>
+<div class="body">
+    <h2 class="__info_title"><u>Info</u></h2>
+    <p class="__rights"><b>All rights over {self.name} belong to {self.author}.</b></p>
+</div>
+<p>{self.description}</p>
+</body>
+</html>"""
         with open(self.html_file, "w") as f:
             f.write(html_content)
         print("Updated info.")
