@@ -46,7 +46,7 @@ class Bucket:
     def set_property(self, key, value):
         self.ensure_initialized()
         meta_data = self._load_json(self.meta_file, {})
-        meta_data[property] = value
+        meta_data[key] = value
         self._save_json(self.meta_file, meta_data)
         print(f"Set {key} to '{value}'.")
 
@@ -167,8 +167,8 @@ class Bucket:
             f.write(html_content)
         print("Updated info.")
 
-    def manage_web(self, subcommand):
+    def manage_web(self, subcommand, arg):
         if subcommand == "update":
-            self.update_info(self.description)
+            self.update_info(arg)
         elif subcommand == "open":
             webbrowser.open(f"file://{os.path.abspath(self.html_file)}")

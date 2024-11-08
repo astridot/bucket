@@ -4,7 +4,7 @@ def read_long_description():
     with open('info.html', encoding='utf-8') as f:
         return f.read()
 
-VERSION: str = "2.1.83"
+VERSION: str = "2.1.84"
 
 setup(
     name='bkt',
