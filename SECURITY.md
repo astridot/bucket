@@ -3,7 +3,7 @@
 ## Supported Versions
 
 Currently, all versions of Bucket releases including `bkt` (PyPI release) are supported
-for security updates. If these vulnerabilities are severe, the release will be deleted
+for security updates. If these vulnerabilities are severe, the release will be removed
 immediately and further action will be taken about the situation.
 
 ## Reporting a Vulnerability
