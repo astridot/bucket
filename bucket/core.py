@@ -48,7 +48,7 @@ class Bucket:
         meta_data = {"name": self.name, "entrypoint": "", "author": self.author}
         self._save_json(self.meta_file, meta_data)
         self._save_json(self.dep_file, {})
-        self.update_info(se)
+        self.update_info()
         print(f"Bucket '{self.name}' initialized.")
 
     def destroy(self):

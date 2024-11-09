@@ -12,8 +12,6 @@ Makoschin Free Software License for more details.
 """
 
 import argparse
-import os
-import webbrowser
 from .core import Bucket
 
 def main():
