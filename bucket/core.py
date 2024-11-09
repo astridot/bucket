@@ -11,7 +11,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 Makoschin Free Software License for more details.
 """
 
-import os, json, subprocess, shutil, webbrowser
+import os, json, subprocess, shutil
 
 
 class Bucket:
@@ -23,7 +23,7 @@ class Bucket:
         self.dep_file = os.path.join(self.bucket_dir, "dependencies.json")
         self.html_file = os.path.join(self.bucket_dir, "index.html")
         self.author = os.getlogin()
-        self.description = "No information available."
+        self.description = ""
 
     def ensure_initialized(self, should_exist=True):
         exists = os.path.exists(self.bucket_dir)
@@ -49,7 +49,7 @@ class Bucket:
         self._save_json(self.meta_file, meta_data)
         self._save_json(self.dep_file, {})
         self.update_info()
-        print(f"Bucket '{self.name}' initialized.")
+        print(f"Bucket '{self.name}' initialized successfully.")
 
     def destroy(self):
         self.ensure_initialized()
@@ -112,11 +112,18 @@ class Bucket:
                 print(f"Installing {dep_name}...")
                 subprocess.run(install_command, shell=True)
             else:
-                print(f"No install command for {dep_name}, visit {details['source']} to install manually.")
+                if details["source"].startswith("http"):
+                    os.system(f"pwsh -Command start {details["source"]}")
+                else:
+                    os.system(f"pwsh -Command start \"'https://google.com/search?q={dep_name} {details["version"]} {details["source"]} install'\"")
 
     def update_info(self):
-        with open("info.html") as f:
-            self.description = f.read()
+        if os.path.exists("info.html"):
+            with open("info.html") as f:
+                self.description = f.read()
+        else:
+            print("No 'info.html' file found.")
+            self.description = "No information available."
         self.author = self._load_json(self.meta_file, {})["author"]
         html_content = f"""<!doctype html>
 <html lang="en">
@@ -162,7 +169,7 @@ class Bucket:
 </style>
 </head>
 <body>
-<div class="header">
+<div class="__header">
     <br>
     <div class="title-container">
         <h1 class="__title">{self.name}</h1>
@@ -171,7 +178,7 @@ class Bucket:
     <h3 class="__hint"><i>Scroll down to learn more about {self.name}</i></h3>
     <br>
 </div>
-<div class="body">
+<div class="__body">
     <h2 class="__info_title"><u>Info</u></h2>
     <p class="__rights"><b>All rights over {self.name} belong to {self.author}.</b></p>
 </div>
@@ -186,4 +193,4 @@ class Bucket:
         if subcommand == "update":
             self.update_info()
         elif subcommand == "open":
-            webbrowser.open(f"file://{os.path.abspath(self.html_file)}")
+            os.system(f"pwsh -Command start \"{os.path.abspath(self.html_file)}\"")
