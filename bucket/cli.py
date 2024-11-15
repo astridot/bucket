@@ -48,6 +48,41 @@ def main():
     rm_parser = dep_subparsers.add_parser("rm", help="Remove dependencies")
     rm_parser.add_argument("name", help="Dependency name or '*' to remove all")
 
+    version_parser = subparsers.add_parser("vs", help="Manage Bucket versions")
+    version_subparsers = version_parser.add_subparsers(dest="subcommand", required=True)
+    version_subparsers.add_parser("commit", help="Save a version snapshot")
+    rollback_parser = version_subparsers.add_parser("rollback", help="Rollback to a specific version")
+    rollback_parser.add_argument("timestamp", help="Version timestamp to rollback to")
+    rollback_parser.add_argument("timestamp2", help="Second part of the version timestamp to rollback to")
+    version_subparsers.add_parser("history", help="List all saved versions")
+
+    pr_parser = subparsers.add_parser("pr", help="Manage pull requests")
+    pr_subparsers = pr_parser.add_subparsers(dest="subcommand", required=True)
+    pr_create = pr_subparsers.add_parser("create", help="Create a new pull request")
+    pr_create.add_argument("source")
+    pr_create.add_argument("target")
+    pr_create.add_argument("description")
+    pr_approve = pr_subparsers.add_parser("approve", help="Approve and merge a pull request")
+    pr_approve.add_argument("id")
+    pr_approve.add_argument("id2")
+    pr_subparsers.add_parser("list", help="List all pull requests")
+    pr_info = pr_subparsers.add_parser("info", help="Get the diagnosis of a pull request")
+    pr_info.add_argument("id")
+    pr_info.add_argument("id2")
+
+    branch_parser = subparsers.add_parser("branch", help="Manage branches")
+    branch_subparsers = branch_parser.add_subparsers(dest="subcommand", required=True)
+    branch_create = branch_subparsers.add_parser("create", help="Create a new branch")
+    branch_create.add_argument("name")
+
+    branch_switch = branch_subparsers.add_parser("switch", help="Switch to an existing branch")
+    branch_switch.add_argument("name")
+
+    branch_rm = branch_subparsers.add_parser("rm", help="Remove an existing branch")
+    branch_rm.add_argument("name")
+
+    branch_subparsers.add_parser("list", help="List all branches")
+
     # Execute parsed arguments
     args = parser.parse_args()
     bucket = Bucket(directory=args.dir if 'dir' in args else ".")
@@ -55,6 +90,14 @@ def main():
     match args.command:
         case "init": bucket.init()
         case "destroy": bucket.destroy()
+        case "vs":
+            match args.subcommand:
+                case "commit":
+                    bucket.commit_version()
+                case "rollback":
+                    bucket.rollback_version(f"{args.timestamp} {args.timestamp2}")
+                case "history":
+                    bucket.list_versions()
         case "run": bucket.run(args.args)
         case "set": bucket.set_property(args.property, " ".join(args.value))
         case "web": bucket.manage_web(args.subcommand)
@@ -65,3 +108,15 @@ def main():
                 case "list": bucket.list_dependencies()
                 case "install": bucket.install_dependencies(args.name)
                 case "rm": bucket.remove_dependency(args.name)
+        case "branch":
+            match args.subcommand:
+                case "create": bucket.create_branch(args.name)
+                case "switch": bucket.switch_branch(args.name)
+                case "list": bucket.list_branches()
+                case "rm": bucket.delete_branch(args.name)
+        case "pr":
+            match args.subcommand:
+                case "create": bucket.create_pull_request(args.source, args.target, args.description)
+                case "list": bucket.list_pull_requests()
+                case "approve": bucket.approve_pull_request(f"{args.id} {args.id2}")
+                case "info": bucket.get_pull_request_description(f"{args.id} {args.id2}")

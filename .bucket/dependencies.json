@@ -1,7 +1,0 @@
-{
-    "requests": {
-        "source": "pip",
-        "version": "latest",
-        "install_command": null
-    }
-}
