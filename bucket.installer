@@ -1,0 +1,38 @@
+"""
+Run this installer using `python.exe bucket.installer`
+Bucket will be installed and added to PATH*
+
+*when a program is in PATH, it can be used and opened anywhere on your computer.
+
+DEPENDENCIES:
+- pip must be installed on your system (pip comes pre-installed with python)
+- the git cli must be installed on your system (get it at https://git-scm.com/downloads)
+- you must be running Windows with sufficient permissions (preferably administrator)
+
+INSTALLING VIA PIP-BKT VS BUCKET.INSTALLER:
+
+section >>> pip-bkt ||| bucket.installer
+----------------------------------------
+releases >>> access to newest stable release ||| access to newest release in general
+install time >>> a bit slower ||| a bit faster
+install method >>> contacts pypi api to install from web ||| contacts github api to install from web
+compatibility >>> available if pip is installed ||| available if pip and git are installed
+recommended >>> recommended for fast install ||| recommended for memory-efficiency
+how to install >>> run `pip install bkt` ||| go to github.com/astridot/bucket, download the bucket.installer file, run `py bucket.installer`
+how to uninstall >>> run `pip uninstall bkt` ||| run `pip uninstall bkt`
+overall >>> bucket.installer is the overall preferred way of installing bucket.
+"""
+
+import os, shutil
+
+def remove_readonly(func, path, exc_info):
+    os.chmod(path, 0o777)
+    func(path)
+
+def main() -> None:
+	os.system("git clone https://github.com/astridot/bucket bucket-temporary")
+	os.system("pip install ./bucket-temporary")
+	shutil.rmtree("bucket-temporary", onerror=remove_readonly)
+
+if __name__ == "__main__":
+	main()

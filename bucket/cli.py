@@ -11,112 +11,98 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 Makoschin Free Software License for more details.
 """
 
-import argparse
-from .core import Bucket
+try:
+    import typer
+    from .core import Bucket
+    from typing import List, Optional
 
-def main():
-    parser = argparse.ArgumentParser(description="Bucket CLI Tool")
-    subparsers = parser.add_subparsers(dest="command", required=True)
+    app = typer.Typer()
+    @app.command()
+    def init():
+        """Initialize a new Bucket"""
+        bucket = Bucket()
+        bucket.init()
 
-    # Initialize, Destroy, Run, Set, and Web Commands
-    subparsers.add_parser("init", help="Initialize a new Bucket")
-    subparsers.add_parser("destroy", help="Destroy an existing Bucket")
-    run_parser = subparsers.add_parser("run", help="Run the Bucket entrypoint command")
-    run_parser.add_argument("args", nargs=argparse.REMAINDER, help="Arguments for the entrypoint")
+    @app.command()
+    def destroy():
+        """Destroy an existing Bucket"""
+        bucket = Bucket()
+        bucket.destroy()
 
-    set_parser = subparsers.add_parser("set", help="Set Bucket properties")
-    set_parser.add_argument("property", choices=["entrypoint", "author"], help="Property to set")
-    set_parser.add_argument("value", nargs="+", help="Value to set")
+    @app.command()
+    def run(args: List[str]):
+        """Run the Bucket entrypoint command"""
+        bucket = Bucket()
+        bucket.run(args)
 
-    web_parser = subparsers.add_parser("web", help="Manage Bucket web interface")
-    web_parser.add_argument("subcommand", choices=["update", "open"], help="Subcommand for web interface")
+    @app.command()
+    def set_property(property_: str, value: List[str]):
+        """Set Bucket properties"""
+        bucket = Bucket()
+        bucket.set_property(property_, " ".join(value))
 
-    # Dependency Command
-    dep_parser = subparsers.add_parser("dep", help="Manage Bucket dependencies")
-    dep_subparsers = dep_parser.add_subparsers(dest="subcommand", required=True)
+    @app.command()
+    def dep(subcommand: str = typer.Argument(..., help="Subcommand", metavar="<add|edit|list|install|rm>"), name: Optional[str] = None, source: Optional[str] = None,
+            version: Optional[str] = "latest", install_command: Optional[str] = None):
+        """Manage Bucket dependencies"""
+        bucket = Bucket()
+        if subcommand == "add" or subcommand == "edit":
+            bucket.add_or_edit_dependency(name, source, version, install_command, edit=subcommand=="edit")
+        elif subcommand == "list":
+            bucket.list_dependencies()
+        elif subcommand == "install":
+            bucket.install_dependencies(name or "*")
+        elif subcommand == "rm":
+            bucket.remove_dependency(name)
 
-    for cmd in ["add", "edit"]:
-        sub = dep_subparsers.add_parser(cmd)
-        sub.add_argument("name")
-        sub.add_argument("source")
-        sub.add_argument("version", nargs="?", default="latest")
-        sub.add_argument("install_command", nargs="?", default=None)
+    @app.command()
+    def vs(subcommand: str = typer.Argument(..., help="Subcommand", metavar="<commit|rollback|history>"), timestamp: Optional[str] = None, timestamp2: Optional[str] = None):
+        """Manage Bucket versions"""
+        bucket = Bucket()
+        if subcommand == "commit":
+            bucket.commit_version()
+        elif subcommand == "rollback" and timestamp and timestamp2:
+            bucket.rollback_version(f"{timestamp} {timestamp2}")
+        elif subcommand == "history":
+            bucket.list_versions()
 
-    dep_subparsers.add_parser("list", help="List all dependencies")
-    install_parser = dep_subparsers.add_parser("install", help="Install dependencies")
-    install_parser.add_argument("name", nargs="?", default="*")
-    rm_parser = dep_subparsers.add_parser("rm", help="Remove dependencies")
-    rm_parser.add_argument("name", help="Dependency name or '*' to remove all")
+    @app.command()
+    def pr(subcommand: str = typer.Argument(..., help="Subcommand", metavar="<create|approve|list|info>"), source: Optional[str] = None, target: Optional[str] = None,
+           description: Optional[str] = None, id1: Optional[str] = None, id2: Optional[str] = None):
+        """Manage pull requests"""
+        bucket = Bucket()
+        if subcommand == "create" and source and target and description:
+            bucket.create_pull_request(source, target, description)
+        elif subcommand == "approve" and id1 and id2:
+            bucket.approve_pull_request(f"{id1} {id2}")
+        elif subcommand == "list":
+            bucket.list_pull_requests()
+        elif subcommand == "info" and id1 and id2:
+            bucket.get_pull_request_description(f"{id1} {id2}")
 
-    version_parser = subparsers.add_parser("vs", help="Manage Bucket versions")
-    version_subparsers = version_parser.add_subparsers(dest="subcommand", required=True)
-    version_subparsers.add_parser("commit", help="Save a version snapshot")
-    rollback_parser = version_subparsers.add_parser("rollback", help="Rollback to a specific version")
-    rollback_parser.add_argument("timestamp", help="Version timestamp to rollback to")
-    rollback_parser.add_argument("timestamp2", help="Second part of the version timestamp to rollback to")
-    version_subparsers.add_parser("history", help="List all saved versions")
+    @app.command()
+    def branch(subcommand: str = typer.Argument(..., help="Subcommand", metavar="<create|switch|rm|list>"), name: Optional[str] = None):
+        """Manage branches"""
+        bucket = Bucket()
+        if subcommand == "create" and name:
+            bucket.create_branch(name)
+        elif subcommand == "switch" and name:
+            bucket.switch_branch(name)
+        elif subcommand == "rm" and name:
+            bucket.delete_branch(name)
+        elif subcommand == "list":
+            bucket.list_branches()
 
-    pr_parser = subparsers.add_parser("pr", help="Manage pull requests")
-    pr_subparsers = pr_parser.add_subparsers(dest="subcommand", required=True)
-    pr_create = pr_subparsers.add_parser("create", help="Create a new pull request")
-    pr_create.add_argument("source")
-    pr_create.add_argument("target")
-    pr_create.add_argument("description")
-    pr_approve = pr_subparsers.add_parser("approve", help="Approve and merge a pull request")
-    pr_approve.add_argument("id")
-    pr_approve.add_argument("id2")
-    pr_subparsers.add_parser("list", help="List all pull requests")
-    pr_info = pr_subparsers.add_parser("info", help="Get the diagnosis of a pull request")
-    pr_info.add_argument("id")
-    pr_info.add_argument("id2")
+    @app.command()
+    def feedback():
+        import os
+        os.system("pwsh -Command start https://github.com/astridot/issues/new")
 
-    branch_parser = subparsers.add_parser("branch", help="Manage branches")
-    branch_subparsers = branch_parser.add_subparsers(dest="subcommand", required=True)
-    branch_create = branch_subparsers.add_parser("create", help="Create a new branch")
-    branch_create.add_argument("name")
-
-    branch_switch = branch_subparsers.add_parser("switch", help="Switch to an existing branch")
-    branch_switch.add_argument("name")
-
-    branch_rm = branch_subparsers.add_parser("rm", help="Remove an existing branch")
-    branch_rm.add_argument("name")
-
-    branch_subparsers.add_parser("list", help="List all branches")
-
-    # Execute parsed arguments
-    args = parser.parse_args()
-    bucket = Bucket(directory=args.dir if 'dir' in args else ".")
-
-    match args.command:
-        case "init": bucket.init()
-        case "destroy": bucket.destroy()
-        case "vs":
-            match args.subcommand:
-                case "commit":
-                    bucket.commit_version()
-                case "rollback":
-                    bucket.rollback_version(f"{args.timestamp} {args.timestamp2}")
-                case "history":
-                    bucket.list_versions()
-        case "run": bucket.run(args.args)
-        case "set": bucket.set_property(args.property, " ".join(args.value))
-        case "web": bucket.manage_web(args.subcommand)
-        case "dep":
-            match args.subcommand:
-                case "add": bucket.add_or_edit_dependency(args.name, args.source, args.version, args.install_command)
-                case "edit": bucket.add_or_edit_dependency(args.name, args.source, args.version, args.install_command, edit=True)
-                case "list": bucket.list_dependencies()
-                case "install": bucket.install_dependencies(args.name)
-                case "rm": bucket.remove_dependency(args.name)
-        case "branch":
-            match args.subcommand:
-                case "create": bucket.create_branch(args.name)
-                case "switch": bucket.switch_branch(args.name)
-                case "list": bucket.list_branches()
-                case "rm": bucket.delete_branch(args.name)
-        case "pr":
-            match args.subcommand:
-                case "create": bucket.create_pull_request(args.source, args.target, args.description)
-                case "list": bucket.list_pull_requests()
-                case "approve": bucket.approve_pull_request(f"{args.id} {args.id2}")
-                case "info": bucket.get_pull_request_description(f"{args.id} {args.id2}")
+    if __name__ == "__main__":
+        app()
+except Exception as error: # NOQA
+    import typer
+    from tkinter.messagebox import showerror
+    showerror(f"Bucket [{error.__class__.__name__}]", f"{error}\nUse `bucket feedback` to report this to the devs.")
+    typer.echo(typer.style(f"Exited with {error.__class__.__name__}", fg=typer.colors.RED, bold=True))
+    exit(1)

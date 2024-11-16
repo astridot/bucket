@@ -1,1 +1,7 @@
-{}
+{
+    "typer": {
+        "source": "pip",
+        "version": "latest",
+        "install_command": "pip install typer"
+    }
+}

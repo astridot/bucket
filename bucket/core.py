@@ -20,8 +20,7 @@ class Bucket:
         self.directory = directory
         self.current_branch = MAIN_BRANCH  # Default branch is 'main'
         self.main_meta_file = os.path.join(".bucket", "branches", "main", "meta.json")
-        if os.path.exists(self.main_meta_file):
-            self.current_branch = self._load_json(self.main_meta_file, {})["current-branch"]
+        if os.path.exists(self.main_meta_file): self.current_branch = self._load_json(self.main_meta_file, {})["current-branch"]
         self.name = os.path.basename(os.path.abspath(directory))
         self.bucket_dir = os.path.join(directory, ".bucket")
         self.branches_dir = os.path.join(self.bucket_dir, "branches")  # Directory for branches
@@ -31,7 +30,6 @@ class Bucket:
         self.html_file = os.path.join(self.bucket_dir, "index.html")
         self.versions_dir = os.path.join(self.bucket_dir, "versions")
         self.author = os.getlogin()
-        self.description = ""
 
     def ensure_initialized(self, should_exist=True):
         exists = os.path.exists(self.bucket_dir)
@@ -98,7 +96,6 @@ class Bucket:
         self._save_json(self.meta_file, meta_data)
         self._save_json(self.dep_file, {})
         self.commit_version()
-        self.manage_web("update")
 
     def create_branch(self, branch_name, init=False):
         """Create a new branch based on the current state."""
@@ -139,7 +136,7 @@ class Bucket:
                 print(f" - {branch}{" (current)" if branch == current_branch else ""}")
 
     def delete_branch(self, branch_name):
-        """Deletes a specified branch from the branches directory."""
+        """Deletes a specified branch from the branch directory."""
         self.ensure_initialized()
         branch_path = os.path.join(self.branches_dir, branch_name)
         current_branch = self._load_json(self.meta_file, {"current-branch": MAIN_BRANCH})["current-branch"]
@@ -279,81 +276,3 @@ class Bucket:
                     os.system(f"pwsh -Command start {details["source"]}")
                 else:
                     os.system(f"pwsh -Command start \"'https://google.com/search?q={dep_name} {details["version"]} {details["source"]} install'\"")
-
-    def update_info(self):
-        if os.path.exists("info.html"):
-            with open("info.html") as f:
-                self.description = f.read()
-        else:
-            print("No 'info.html' file found.")
-            self.description = "No information available."
-        self.author = self._load_json(self.meta_file, {})["author"]
-        html_content = f"""<!doctype html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="X-UA-Compatible" content="ie=edge">
-<title>{self.name}</title>
-<style>
-    body {{
-        font-family: Arial, sans-serif;
-    }}
-    .header {{
-        background-image: linear-gradient(to bottom right, #00a6ff, #0055ff);
-        color: white;
-        padding: 20px;
-        text-align: center;
-    }}
-    .title-container {{
-        display: flex;
-        align-items: baseline;
-        justify-content: center;
-        gap: 20px;
-    }}
-    .__title {{
-        font-size: 10em;
-        margin: 0;
-    }}
-    .__subtitle {{
-        font-size: 3em;
-        margin: 0;
-    }}
-    .__info_title {{
-        font-size: 4.5em;
-    }}
-    .__rights {{
-        font-size: 2em;
-    }}
-    .body {{
-        color: black;
-        padding: 20px;
-    }}
-</style>
-</head>
-<body>
-<div class="__header">
-    <br>
-    <div class="title-container">
-        <h1 class="__title">{self.name}</h1>
-        <h2 class="__subtitle">by {self.author}</h2>
-    </div>
-    <h3 class="__hint"><i>Scroll down to learn more about {self.name}</i></h3>
-    <br>
-</div>
-<div class="__body">
-    <h2 class="__info_title"><u>Info</u></h2>
-    <p class="__rights"><b>All rights over {self.name} belong to {self.author}.</b></p>
-</div>
-<p>{self.description}</p>
-</body>
-</html>"""
-        with open(self.html_file, "w") as f:
-            f.write(html_content)
-        print("Updated info.")
-
-    def manage_web(self, subcommand):
-        if subcommand == "update":
-            self.update_info()
-        elif subcommand == "open":
-            os.system(f"pwsh -Command start \"{os.path.abspath(self.html_file)}\"")
