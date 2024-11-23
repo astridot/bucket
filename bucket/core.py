@@ -43,7 +43,7 @@ class Bucket:
         if os.path.exists(file_path):
             return json.load(open(file_path))
         else:
-            print(f"Error: {file_path} does not exist and cannot be loaded - Returning default value.")
+            # print(f"Error: {file_path} does not exist and cannot be loaded - Returning default value.")
             # uncomment this line ^ to check for bugs.
             return default
 
@@ -209,14 +209,6 @@ class Bucket:
                 print(f"Error: Branch '{source_branch}' or '{target_branch}' does not exist.")
         else:
             print(f"Pull request '{pr_id}' not found or already merged.")
-
-    def set_property(self, key, value):
-        self.ensure_initialized()
-        meta_data = self._load_json(self.meta_file, {})
-        meta_data[key] = value
-        self._save_json(self.meta_file, meta_data)
-        self.commit_version()  # Save version after property change
-        print(f"Set {key} to '{value}'.")
 
     def destroy(self):
         self.ensure_initialized()
