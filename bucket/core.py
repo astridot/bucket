@@ -273,6 +273,6 @@ class Bucket:
                 subprocess.run(install_command, shell=True)
             else:
                 if details["source"].startswith("http"):
-                    os.system(f"pwsh -Command start {details["source"]}")
+                    os.system(f"pwsh -Command Start-Process {details["source"]}")
                 else:
-                    os.system(f"pwsh -Command start \"'https://google.com/search?q={dep_name} {details["version"]} {details["source"]} install'\"")
+                    os.system(f"pwsh -Command Start-Process \"'https://google.com/search?q={dep_name} {details["version"]} {details["source"]} install'\"")
