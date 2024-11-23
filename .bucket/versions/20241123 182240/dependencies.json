@@ -1,0 +1,7 @@
+{
+    "typer": {
+        "source": "PyPI",
+        "version": "latest",
+        "install_command": "pip install typer"
+    }
+}

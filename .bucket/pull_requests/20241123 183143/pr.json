@@ -1,0 +1,6 @@
+{
+    "source_branch": "add-typer",
+    "target_branch": "main",
+    "description": "Add typer and other dependencies like powershell and python >=3.12",
+    "status": "merged"
+}

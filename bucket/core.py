@@ -29,7 +29,6 @@ class Bucket:
         self.dep_file = os.path.join(self.branches_dir, self.current_branch, "dependencies.json")
         self.html_file = os.path.join(self.bucket_dir, "index.html")
         self.versions_dir = os.path.join(self.bucket_dir, "versions")
-        self.author = os.getlogin()
 
     def ensure_initialized(self, should_exist=True):
         exists = os.path.exists(self.bucket_dir)
@@ -43,7 +42,7 @@ class Bucket:
         if os.path.exists(file_path):
             return json.load(open(file_path))
         else:
-            print(f"Error: {file_path} does not exist and cannot be loaded - Returning default value.")
+            # print(f"Error: {file_path} does not exist and cannot be loaded - Returning default value.")
             # uncomment this line ^ to check for bugs.
             return default
 
@@ -88,8 +87,6 @@ class Bucket:
         os.makedirs(self.pr_dir, exist_ok=True)
         meta_data = {
             "name": self.name,
-            "entrypoint": "",
-            "author": self.author,
             "current-branch": MAIN_BRANCH
         }
         print(f"Bucket '{self.name}' initialized successfully on branch 'main'.")
@@ -121,7 +118,7 @@ class Bucket:
     def list_branches(self):
         """Lists all available branches in the branches directory."""
         self.ensure_initialized()
-        current_branch = self._load_json(self.meta_file, {"current-branch": MAIN_BRANCH})["current-branch"]
+        current_branch = self._load_json(self.main_meta_file, {"current-branch": MAIN_BRANCH})["current-branch"]
         if not os.path.exists(self.branches_dir):
             print("No branches found.")
             return
@@ -210,27 +207,10 @@ class Bucket:
         else:
             print(f"Pull request '{pr_id}' not found or already merged.")
 
-    def set_property(self, key, value):
-        self.ensure_initialized()
-        meta_data = self._load_json(self.meta_file, {})
-        meta_data[key] = value
-        self._save_json(self.meta_file, meta_data)
-        self.commit_version()  # Save version after property change
-        print(f"Set {key} to '{value}'.")
-
     def destroy(self):
         self.ensure_initialized()
         shutil.rmtree(self.bucket_dir)
         print(f"Bucket '{self.name}' destroyed.")
-
-    def run(self, args=None):
-        self.ensure_initialized()
-        meta_data = self._load_json(self.meta_file, {})
-        entrypoint = meta_data.get("entrypoint")
-        if entrypoint:
-            subprocess.run(f"{entrypoint} {' '.join(args or [])}", shell=True)
-        else:
-            print("No entrypoint set. Use 'bucket set entrypoint <command>'.")
 
     def add_or_edit_dependency(self, name, source, version="latest", install_command=None, edit=False):
         self.ensure_initialized()

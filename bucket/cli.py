@@ -30,18 +30,6 @@ try:
         bucket.destroy()
 
     @app.command()
-    def run(args: List[str]):
-        """Run the Bucket entrypoint command"""
-        bucket = Bucket()
-        bucket.run(args)
-
-    @app.command()
-    def set_property(property_: str, value: List[str]):
-        """Set Bucket properties"""
-        bucket = Bucket()
-        bucket.set_property(property_, " ".join(value))
-
-    @app.command()
     def dep(subcommand: str = typer.Argument(..., help="Subcommand", metavar="<add|edit|list|install|rm>"), name: Optional[str] = None, source: Optional[str] = None,
             version: Optional[str] = "latest", install_command: Optional[str] = None):
         """Manage Bucket dependencies"""
@@ -56,13 +44,13 @@ try:
             bucket.remove_dependency(name)
 
     @app.command()
-    def vs(subcommand: str = typer.Argument(..., help="Subcommand", metavar="<commit|rollback|history>"), timestamp: Optional[str] = None, timestamp2: Optional[str] = None):
+    def vs(subcommand: str = typer.Argument(..., help="Subcommand", metavar="<commit|rollback|history>"), id1: Optional[str] = None, id2: Optional[str] = None):
         """Manage Bucket versions"""
         bucket = Bucket()
         if subcommand == "commit":
             bucket.commit_version()
-        elif subcommand == "rollback" and timestamp and timestamp2:
-            bucket.rollback_version(f"{timestamp} {timestamp2}")
+        elif subcommand == "rollback" and id1 and id2:
+            bucket.rollback_version(f"{id1} {id2}")
         elif subcommand == "history":
             bucket.list_versions()
 

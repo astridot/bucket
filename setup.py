@@ -13,7 +13,7 @@ setup(
     author_email='pixilreal@gmail.com',
     description='Dependency manager for any language, for free, no subscriptions.',
     long_description=read_long_description(),
-    long_description_content_type='text/plain',
+    long_description_content_type='text/markdown',
     packages=find_packages(),
     classifiers=[
         'Programming Language :: Python :: 3',
