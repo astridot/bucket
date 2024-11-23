@@ -17,10 +17,13 @@ releases >>> access to newest stable release ||| access to newest release in gen
 install time >>> a bit slower ||| a bit faster
 install method >>> contacts pypi api to install from web ||| contacts github api to install from web
 compatibility >>> available if pip is installed ||| available if pip and git are installed
+os compatibility >>> Windows, Linux* ||| Windows
 recommended >>> recommended for fast install ||| recommended for memory-efficiency
 how to install >>> run `pip install bkt` ||| go to github.com/astridot/bucket, download the bucket.installer file, run `py bucket.installer`
 how to uninstall >>> run `pip uninstall bkt` ||| run `pip uninstall bkt`
 overall >>> bucket.installer is the overall preferred way of installing bucket.
+
+*Only in a virtual environment
 """
 
 import os, shutil
