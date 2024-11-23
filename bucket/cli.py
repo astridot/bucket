@@ -96,7 +96,7 @@ try:
     @app.command()
     def feedback():
         import os
-        os.system("pwsh -Command start https://github.com/astridot/issues/new")
+        os.system("pwsh -Command Start-Process https://github.com/astridot/issues/new")
 
     if __name__ == "__main__":
         app()
