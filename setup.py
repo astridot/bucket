@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 def read_long_description():
-    with open('info.html', encoding='utf-8') as f:
+    with open('README.md', encoding='utf-8') as f:
         return f.read()
 
 VERSION: str = "6.0.0"
