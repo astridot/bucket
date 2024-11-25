@@ -25,7 +25,7 @@ setup(
     entry_points={
         'console_scripts': [
             'bucket=bucket.cli:app',
-            'bucket{VERSION.lstrip("v")[0]}=bucket.cli:app'
+            f'bucket{VERSION.lstrip("v")[0]}=bucket.cli:app'
         ]
     },
 )
