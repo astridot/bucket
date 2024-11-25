@@ -1,16 +1,3 @@
-"""
-Bucket Dependency Manager by Astridot as part of Makoschin Free Software Distributions
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the Makoschin Free Software License (MFSL),
-either version 2.0 of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-Makoschin Free Software License for more details.
-"""
-
 try:
     import typer
     from .core import Bucket
